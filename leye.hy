@@ -43,33 +43,38 @@
   (defn color! [r g b]
     (.set-source-rgb cr r g b))
 
-  (defn circle> [r x]
-    (.arc cr x 0 r 0 (* 2 pi))
+  (defn translate! [x]
+    (.translate cr x 0))
+
+  (defn circle> [r]
+    (.arc cr 0 0 r 0 (* 2 pi))
     (.stroke cr))
 
-  (defn atom> [atom x])
+  (defn atom> [atom])
 
-  (defn cell> [cell x]
+  (defn cell> [cell]
     (setv r (size cell))
     (color! 0 0 0)
-    (circle> r x)
+    (circle> r)
 
+    (.save cr)
+    (translate! (- r (size (cdr cell))))
     (when (cdr cell)
-      (cell> (cdr cell)
-             (+ x
-                (- r (size (cdr cell))))))
+      (cell> (cdr cell)))
+    (.restore cr)
 
+    (.save cr)
+    (translate! (-
+                  (size (car cell)) r))
     ((if (list? (car cell))
        cell>
        atom>)
-         (car cell)
-         (+ x
-            (- r)
-            (size (car cell)))))
+         (car cell))
+    (.restore cr))
   ; ---
 
   ; actual drawing
-  (cell> tree 0)
+  (cell> tree)
   ; ---
 
   (.write-to-png surface "out.png"))
