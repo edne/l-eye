@@ -59,7 +59,6 @@
                 (.translate cr x 0))
 
               (defn circle! [r]
-                (.arc cr 0 0 r 0 (* 2 pi))
                 (.arc cr 0 0 r 0 (* 2 pi)))
 
               (defmacro move [dx &rest body]
@@ -74,12 +73,11 @@
                   (setv r (size cell))
 
                   (circle! r)
-                  (fill! 1 1 1 0.1)
-
-                  (circle! r)
                   (if (list? (car cell))
                     (do
-                      (stroke! 0 0 0 0.2)
+                      (fill! 1 1 1 0.1)
+                      (circle! r)
+                      (stroke! 0.5 0.5 0.5 1)
 
                       (.rotate cr (/ pi 2))
                       (move (- (size (car cell)) r)
@@ -88,7 +86,7 @@
                         (cell! (cdr cell))))
 
                     (do
-                      (stroke! 0 0 0 0.8)
+                      (stroke! 0 0 1 0.5)
                       (cell! (cdr cell))))))
 
               (cell! tree)))
