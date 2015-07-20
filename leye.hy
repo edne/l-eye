@@ -6,9 +6,6 @@
   [cairo]
   [random [random]])
 
-(def W 1000)
-(def H 1000)
-
 
 (defn list? [l]
   (isinstance l list))
@@ -18,6 +15,7 @@
   (if (list? tree)
     (if tree
       (+
+         1
          (size (car tree))
          (size (cdr tree)))
       0)
@@ -34,7 +32,7 @@
 
        (let [[sz    (size tree)]
              [sz/2  (/ sz 2)]
-             [ratio (/ (min W H) sz)]]
+             [ratio (/ (min ~w ~h) sz)]]
          (.scale     cr ratio ratio)
          (.translate cr sz/2 sz/2))
 
@@ -86,7 +84,7 @@
                         (cell! (cdr cell))))
 
                     (do
-                      (stroke! 0 0 1 0.5)
+                      (stroke! 0 0 1 1)
                       (cell! (cdr cell))))))
 
               (cell! tree)))
