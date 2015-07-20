@@ -47,19 +47,24 @@
               (defn color! [r g b a]
                 (.set-source-rgba cr r g b a))
 
+              (defn fill! [r g b a]
+                (color! r g b a)
+                (.fill cr))
+
+              (defn stroke! [r g b a]
+                (color! r g b a)
+                (.stroke cr))
+
               (defn translate! [x]
                 (.translate cr x 0))
 
               (defn circle! [r]
                 (.arc cr 0 0 r 0 (* 2 pi))
-                (.fill cr)
-                (.arc cr 0 0 r 0 (* 2 pi))
-                (color! 0 0 0 0.2)
-                (.stroke cr))
+                (.arc cr 0 0 r 0 (* 2 pi)))
 
               (defn atom! [atom]
-                (color! 0 0 0 1)
-                (circle! 1))
+                (circle! 1)
+                (fill! 0 0 0 1))
 
               (defmacro move [dx &rest body]
                 `(do
@@ -70,8 +75,10 @@
 
               (defn cell! [cell]
                 (setv r (size cell))
-                (color! 1 1 1 0.1)
                 (circle! r)
+                (fill! 1 1 1 0.1)
+                (circle! r)
+                (stroke! 0 0 0 0.2)
                 ;(.rotate cr (* 2 pi (random)))
                 (.rotate cr (/ (* 2 pi) r))
 
