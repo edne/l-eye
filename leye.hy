@@ -83,12 +83,13 @@
 
                       (.rotate cr (/ pi 2))
                       (move (- (size (car cell)) r)
-                            (cell! (car cell))))
+                            (cell! (car cell)))
+                      (move (- r (size (cdr cell)))
+                        (cell! (cdr cell))))
 
-                    (stroke! 0 0 0 0.8))
-
-                  (move (- r (size (cdr cell)))
-                        (cell! (cdr cell)))))
+                    (do
+                      (stroke! 0 0 0 0.8)
+                      (cell! (cdr cell))))))
 
               (cell! tree)))
 
