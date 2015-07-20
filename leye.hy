@@ -24,7 +24,7 @@
     1))
 
 
-(defn draw [tree]
+(defn draw! [tree]
 
   ; cairo boilerplate
   (setv surface
@@ -41,23 +41,23 @@
   (.set_line_width cr 1)
   ; ---
 
-  ; drawing functions (stuff> means draw-stuff)
+  ; drawing functions
   (defn color! [r g b a]
     (.set-source-rgba cr r g b a))
 
   (defn translate! [x]
     (.translate cr x 0))
 
-  (defn circle> [r]
+  (defn circle! [r]
     (.arc cr 0 0 r 0 (* 2 pi))
     (.fill cr)
     (.arc cr 0 0 r 0 (* 2 pi))
     (color! 0 0 0 0.2)
     (.stroke cr))
 
-  (defn atom> [atom]
+  (defn atom! [atom]
     (color! 0 0 0 1)
-    (circle> 1))
+    (circle! 1))
 
   (defmacro move [dx &rest body]
     `(do
@@ -66,27 +66,27 @@
        ~@body
        (.restore cr)))
 
-  (defn cell> [cell]
+  (defn cell! [cell]
     (setv r (size cell))
     (color! 1 1 1 0.1)
-    (circle> r)
+    (circle! r)
     ;(.rotate cr (* 2 pi (random)))
     (.rotate cr (/ (* 2 pi) r))
 
     ;(.rotate cr (/ pi 2))
     (move (- (size (car cell)) r)
           ((if (list? (car cell))
-             cell>
-             atom>)
+             cell!
+             atom!)
                (car cell)))
 
     (move (- r (size (cdr cell)))
           (when (cdr cell)
-            (cell> (cdr cell)))))
+            (cell! (cdr cell)))))
   ; ---
 
   ; actual drawing
-  (cell> tree)
+  (cell! tree)
   ; ---
 
   (.write-to-png surface "out.png"))
@@ -103,4 +103,4 @@
   (setv tree
     (tokenize code))
 
-  (draw tree))
+  (draw! tree))
