@@ -27,7 +27,7 @@
   (defmacro cairo-draw [w h file-name &rest body]
     `(do
        (setv surface
-         (cairo.ImageSurface cairo.FORMAT_ARGB32 ~w ~h))
+         (cairo.SVGSurface ~file-name ~w ~h))
        (setv cr (cairo.Context surface))
 
        (let [[sz    (size tree)]
@@ -38,10 +38,9 @@
 
        (.scale cr 0.5 0.5)
        (.set_line_width cr 1)
-       ~@body
-       (.write-to-png surface ~file-name)))
+       ~@body))
 
-  (cairo-draw 1000 1000 "out.png"
+  (cairo-draw 1000 1000 "out.svg"
               (defn color! [r g b a]
                 (.set-source-rgba cr r g b a))
 
@@ -84,7 +83,7 @@
                         (cell! (cdr cell))))
 
                     (do
-                      (stroke! 0 0 1 1)
+                      (stroke! 0 0 1 0.5)
                       (cell! (cdr cell))))))
 
               (cell! tree)))
