@@ -62,10 +62,6 @@
                 (.arc cr 0 0 r 0 (* 2 pi))
                 (.arc cr 0 0 r 0 (* 2 pi)))
 
-              (defn atom! [atom]
-                (circle! 1)
-                (fill! 0 0 0 1))
-
               (defmacro move [dx &rest body]
                 `(do
                    (.save cr)
@@ -74,23 +70,24 @@
                    (.restore cr)))
 
               (defn cell! [cell]
-                (setv r (size cell))
-                (circle! r)
-                (fill! 1 1 1 0.1)
-                (circle! r)
-                (stroke! 0 0 0 0.2)
-                ;(.rotate cr (* 2 pi (random)))
-                (.rotate cr (/ (* 2 pi) r))
+                (when cell
+                  (setv r (size cell))
 
-                ;(.rotate cr (/ pi 2))
-                (move (- (size (car cell)) r)
-                      ((if (list? (car cell))
-                         cell!
-                         atom!)
-                           (car cell)))
+                  (circle! r)
+                  (fill! 1 1 1 0.1)
 
-                (move (- r (size (cdr cell)))
-                      (when (cdr cell)
+                  (circle! r)
+                  (if (list? (car cell))
+                    (do
+                      (stroke! 0 0 0 0.2)
+
+                      (.rotate cr (/ pi 2))
+                      (move (- (size (car cell)) r)
+                            (cell! (car cell))))
+
+                    (stroke! 0 0 0 0.8))
+
+                  (move (- r (size (cdr cell)))
                         (cell! (cdr cell)))))
 
               (cell! tree)))
