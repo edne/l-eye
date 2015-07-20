@@ -59,6 +59,13 @@
     (color! 0 0 0 1)
     (circle> 1))
 
+  (defmacro move [dx &rest body]
+    `(do
+       (.save cr)
+       (translate! ~dx)
+       ~@body
+       (.restore cr)))
+
   (defn cell> [cell]
     (setv r (size cell))
     (color! 1 1 1 0.1)
@@ -66,22 +73,16 @@
     ;(.rotate cr (* 2 pi (random)))
     (.rotate cr (/ (* 2 pi) r))
 
-    (.save cr)
-    (translate! (-
-                  (size (car cell)) r))
-    (.rotate cr (/ pi 2))
-    ((if (list? (car cell))
-       cell>
-       atom>)
-         (car cell))
-    (.restore cr)
-    (.save cr)
-    (translate! (- r (size (cdr cell))))
-    (when (cdr cell)
-      (cell> (cdr cell)))
-    (.restore cr)
+    ;(.rotate cr (/ pi 2))
+    (move (- (size (car cell)) r)
+          ((if (list? (car cell))
+             cell>
+             atom>)
+               (car cell)))
 
-    )
+    (move (- r (size (cdr cell)))
+          (when (cdr cell)
+            (cell> (cdr cell)))))
   ; ---
 
   ; actual drawing
